@@ -1,0 +1,24 @@
+[project]
+name = "green-house-crop"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "catboost>=1.2.10",
+    "dill>=0.4.1",
+    "ensure>=1.0.4",
+    "joblib>=1.5.3",
+    "matplotlib>=3.10.9",
+    "mlflow>=3.11.1",
+    "notebook>=7.5.5",
+    "numpy>=2.4.4",
+    "pandas>=2.3.3",
+    "python-box>=7.4.1",
+    "pyyaml>=6.0.3",
+    "scikit-learn>=1.8.0",
+    "streamlit>=1.56.0",
+    "tqdm>=4.67.3",
+    "types-pyyaml>=6.0.12.20260408",
+    "xgboost>=3.2.0",
+]

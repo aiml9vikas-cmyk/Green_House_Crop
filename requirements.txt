@@ -1,0 +1,16 @@
+numpy
+pandas 
+mlflow
+notebook
+scikit-learn
+matplotlib
+python-box
+pyyaml
+tqdm
+ensure
+joblib
+types-PyYAML
+catboost
+xgboost
+dill
+streamlit

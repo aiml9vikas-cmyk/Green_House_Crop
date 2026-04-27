@@ -1,0 +1,24 @@
+COLUMNS:
+  greenhouse_id: float64
+  crop_type: str    
+  variety: str    
+  planting_date: str    
+  harvest_date: str    
+  days_to_maturity: float64
+  avg_temperature_C: float64
+  min_temperature_C: float64
+  max_temperature_C: float64
+  humidity_percent: float64
+  co2_ppm: float64
+  light_intensity_lux: float64
+  photoperiod_hours: float64
+  irrigation_mm: float64
+  fertilizer_N_kg_ha: float64
+  fertilizer_P_kg_ha: float64
+  fertilizer_K_kg_ha: float64
+  pest_severity: float64
+  soil_pH: float64
+  yield_kg_per_m2: float64
+
+TARGET_COLUMN:
+  name: yield_kg_per_m2
