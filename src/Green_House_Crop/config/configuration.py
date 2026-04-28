@@ -49,17 +49,24 @@ class ConfigurationManager:
     
     def get_data_transformation_config(self) -> DataTransformationConfig:
         config=self.config.data_transformation
+        schema=self.schema.TARGET_COLUMN
+        schema_a = self.schema.COLUMNS
         create_directories([config.root_dir])
         data_transformation_config=DataTransformationConfig(
             root_dir=config.root_dir,
-            data_path=config.data_path
+            train_data_path=config.train_data_path,
+            test_data_path= config.test_data_path,
+            raw_data_path= config.raw_data_path,
+            pre_processing= config.pre_processing,
+            target_column = schema.name,
+            all_schema=schema_a
         )
         return data_transformation_config
     
     def get_model_trainer_config(self) -> ModelTrainerConfig:
         config = self.config.model_trainer
-        params = self.params.ElasticNet
-        schema =  self.schema.TARGET_COLUMN
+        params = self.params.model_params
+        
 
         create_directories([config.root_dir])
 
@@ -67,10 +74,8 @@ class ConfigurationManager:
             root_dir=config.root_dir,
             train_data_path = config.train_data_path,
             test_data_path = config.test_data_path,
-            model_name = config.model_name,
-            alpha = params.alpha,
-            l1_ratio = params.l1_ratio,
-            target_column = schema.name
+            model_name = config.model_name
+            
             
         )
 

@@ -1,4 +1,7 @@
-import logging
+import sys
+from src.Green_House_Crop.exception import CustomException
+from src.Green_House_Crop.logger import logging
+#import logging
 import os
 import yaml
 from src.Green_House_Crop import logger
@@ -9,6 +12,8 @@ from box import ConfigBox
 from pathlib import Path
 from typing import Any
 from box.exceptions import BoxValueError
+import dill
+import pickle
 
 
 @ensure_annotations
@@ -103,3 +108,20 @@ def load_bin(path: Path) -> Any:
     data = joblib.load(path)
     logger.info(f"binary file loaded from: {path}")
     return data
+
+def save_object(file_path, obj):
+    try:
+        dir_path=os.path.dirname(file_path)
+        os.makedirs(dir_path,exist_ok=True)
+
+        with open(file_path, "wb") as file_obj:
+            pickle.dump(obj, file_obj)
+    except Exception as e:
+        raise CustomException(e,sys)
+
+def load_object(file_path):
+    try:
+        with open(file_path, "rb") as file_obj:
+            return pickle.load(file_obj)
+    except Exception as e:
+        raise CustomException(e,sys)

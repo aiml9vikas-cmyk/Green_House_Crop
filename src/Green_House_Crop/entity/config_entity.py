@@ -19,7 +19,12 @@ class DataValidationConfig:
 @dataclass
 class DataTransformationConfig:
     root_dir: Path
-    data_path: Path
+    train_data_path: Path
+    test_data_path: Path
+    raw_data_path: Path
+    pre_processing: Path
+    target_column: float
+    all_schema: dict
 
 @dataclass
 class ModelTrainerConfig:
@@ -27,9 +32,7 @@ class ModelTrainerConfig:
     train_data_path: Path
     test_data_path: Path
     model_name: str
-    alpha: float
-    l1_ratio: float
-    target_column: str
+    
 
 @dataclass
 class ModelEvaluationConfig:
