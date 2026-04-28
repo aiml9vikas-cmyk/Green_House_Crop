@@ -28,12 +28,20 @@ class ModelTrainer:
     def evaluate_models(self,X_train, y_train,X_test,y_test,models,param):
         try:
             report = {}
-
+            
+            """
             for i in range(len(list(models))):
                 model = list(models.values())[i]
                 para=param[list(models.keys())[i]]
-                
-                para = param.get(para, {}) 
+            """              
+                #para = param.get(para, {}) 
+            for model_name, model in models.items():
+                # Get params from yaml, default to {} if missing or None
+                para = param.get(model_name, {})
+                if para is None:
+                    para = {}
+
+                logging.info(f"Started training: {model_name}")
 
                 gs = GridSearchCV(model,para,cv=3,n_jobs=-1)
                 gs.fit(X_train,y_train)
@@ -51,7 +59,9 @@ class ModelTrainer:
 
                 test_model_score = r2_score(y_test, y_test_pred)
 
-                report[list(models.keys())[i]] = test_model_score
+                #report[list(models.keys())[i]] = test_model_score
+                report[model_name] = test_model_score
+                logging.info(f"Model: {model_name}, Score: {test_model_score}")
 
             return report
 
