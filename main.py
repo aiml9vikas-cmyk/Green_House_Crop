@@ -3,9 +3,9 @@ from src.Green_House_Crop.pipeline.data_ingestion_pipeline import DataIngestionT
 from src.Green_House_Crop.pipeline.data_validation_pipeline import DataValidationTrainingPipeline
 from src.Green_House_Crop.pipeline.data_transformation_pipeline import DataTransformationTrainingPipeline
 from src.Green_House_Crop.pipeline.model_training_pipeline import ModelTrainerTrainingPipeline
-"""
-from src.Green_House_Crop.pipeline.model_evaluation_pipeline import ModelEvaluationTrainingPipeline
-"""
+
+from src.Green_House_Crop.pipeline.model_evalution_pipeline import ModelEvaluationTrainingPipeline
+
 STAGE_NAME = "Data Ingestion stage"
 try:
    logging.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
@@ -47,3 +47,14 @@ try:
 except Exception as e:
         logging.exception(e)
         raise e
+
+STAGE_NAME = "Model evaluation stage"
+try:
+   logging.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
+   data_ingestion = ModelEvaluationTrainingPipeline()
+   data_ingestion.initiate_model_evaluation_p()
+   logging.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logging.exception(e)
+        raise e
+

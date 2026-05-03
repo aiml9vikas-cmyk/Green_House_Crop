@@ -4,7 +4,7 @@ from src.Green_House_Crop.logger import logging
 #import logging
 import os
 import yaml
-from src.Green_House_Crop import logger
+
 import json
 import joblib
 from ensure import ensure_annotations
@@ -66,7 +66,7 @@ def save_json(path: Path, data: dict):
     with open(path, "w") as f:
         json.dump(data, f, indent=4)
 
-    logger.info(f"json file saved at: {path}")
+    logging.info(f"json file saved at: {path}")
 
 @ensure_annotations
 def load_json(path: Path) -> ConfigBox:
@@ -81,7 +81,7 @@ def load_json(path: Path) -> ConfigBox:
     with open(path) as f:
         content = json.load(f)
 
-    logger.info(f"json file loaded succesfully from: {path}")
+    logging.info(f"json file loaded succesfully from: {path}")
     return ConfigBox(content)
 
 @ensure_annotations
@@ -93,7 +93,7 @@ def save_bin(data: Any, path: Path):
         path (Path): path to binary file
     """
     joblib.dump(value=data, filename=path)
-    logger.info(f"binary file saved at: {path}")
+    logging.info(f"binary file saved at: {path}")
 
 @ensure_annotations
 def load_bin(path: Path) -> Any:
@@ -106,16 +106,19 @@ def load_bin(path: Path) -> Any:
         Any: object stored in the file
     """
     data = joblib.load(path)
-    logger.info(f"binary file loaded from: {path}")
+    logging.info(f"binary file loaded from: {path}")
     return data
 
 def save_object(file_path, obj):
     try:
         dir_path=os.path.dirname(file_path)
         os.makedirs(dir_path,exist_ok=True)
-
+        
         with open(file_path, "wb") as file_obj:
             pickle.dump(obj, file_obj)
+            #joblib.dump(obj, file_obj)
+        
+        #joblib.dump(obj, file_path)
     except Exception as e:
         raise CustomException(e,sys)
 

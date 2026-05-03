@@ -83,7 +83,7 @@ class ConfigurationManager:
     
     def get_model_evaluation_config(self) -> ModelEvaluationConfig:
         config=self.config.model_evaluation
-        params=self.params.ElasticNet
+        params=self.params.model_params
         schema=self.schema.TARGET_COLUMN
 
         create_directories([config.root_dir])
@@ -95,7 +95,9 @@ class ConfigurationManager:
             all_params=params,
             metric_file_name = config.metric_file_name,
             target_column = schema.name,
-            mlflow_uri="https://dagshub.com/krishnaik06/datascienceproject.mlflow"
+            pre_processing= config.pre_processing,
+            mlflow_uri="https://dagshub.com/aiml9vikas-cmyk/Green_House_Crop.mlflow"
+           
 
 
         )

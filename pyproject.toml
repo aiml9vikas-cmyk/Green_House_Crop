@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "catboost>=1.2.10",
+    "dagshub>=0.7.0",
     "dill>=0.4.1",
     "ensure>=1.0.4",
     "joblib>=1.5.3",

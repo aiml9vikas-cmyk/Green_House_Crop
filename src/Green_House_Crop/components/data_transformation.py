@@ -66,6 +66,9 @@ class DataTransformation:
             logging.info(raw_data.shape)
             print(raw_data.shape," raw data")
             raw_data= raw_data.drop_duplicates().reset_index(drop=True)
+            raw_data = raw_data.drop(columns=['planting_date','harvest_date'],axis=1,errors='ignore')
+            
+
 
             logging.info("Train test split initiated")
             train_set,test_set=train_test_split(raw_data,test_size=0.2,random_state=42)
@@ -109,8 +112,8 @@ class DataTransformation:
             input_feature_test_df=test_df.drop(columns=[target_column_name])
             target_feature_test_df=test_df[target_column_name]
 
-            input_feature_train_df = input_feature_train_df.drop(columns=['planting_date','harvest_date'], axis=1) 
-            input_feature_test_df = input_feature_test_df.drop(columns=['planting_date','harvest_date'], axis=1)
+           # input_feature_train_df = input_feature_train_df.drop(columns=['planting_date','harvest_date'], axis=1) 
+          #  input_feature_test_df = input_feature_test_df.drop(columns=['planting_date','harvest_date'], axis=1)
 
             preprocessing_obj=self.get_data_transformer_object(input_feature_train_df)
             logging.info(
