@@ -27,12 +27,12 @@ model_params:
     
   
   CatBoosting Regressor:
-    iterations: [100, 300, 500]           # Number of trees
+    iterations: [100,140]           # Number of trees
     learning_rate: [0.01, 0.05, 0.1]     # Step size (smaller is usually more stable)
-    depth: [4, 6, 8, 10]                 # Depth of trees (keep < 10 for speed)
+    depth: [4, 6]                 # Depth of trees (keep < 10 for speed)
     l2_leaf_reg: [1, 3, 5, 10]           # Regularization to prevent overfitting
     bagging_temperature: [0, 1]          # Bayesian bagging (0 is off, 1 is on)
-    border_count: [32, 64, 128]          # Precision for numerical features
+    border_count: [32, 64]          # Precision for numerical features
     random_strength: [1, 10] 
   
   
