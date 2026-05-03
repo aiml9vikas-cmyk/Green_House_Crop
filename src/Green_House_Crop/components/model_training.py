@@ -89,8 +89,8 @@ class ModelTrainer:
                 "Decision Tree": DecisionTreeRegressor(),
                 "Gradient Boosting": GradientBoostingRegressor(),
                 "Linear Regression": LinearRegression(),
-                "XGBRegressor": XGBRegressor(),
-                "CatBoosting Regressor": CatBoostRegressor(verbose=False),
+                "XGBRegressor": XGBRegressor(n_jobs=-1),
+                "CatBoosting Regressor": CatBoostRegressor(task_type="CPU",thread_count=-1, verbose=False),
                 "AdaBoost Regressor": AdaBoostRegressor(),
             }
             

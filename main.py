@@ -48,7 +48,7 @@ try:
 except Exception as e:
         logging.exception(e)
         raise CustomException(e,sys)
-"""
+
 STAGE_NAME = "Model evaluation stage"
 try:
    logging.info(f">>>>>> stage {STAGE_NAME} started <<<<<<") 
@@ -59,4 +59,3 @@ except Exception as e:
         logging.exception(e)
         raise e
 
-"""

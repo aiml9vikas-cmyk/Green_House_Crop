@@ -35,7 +35,7 @@ class DataTransformation:
                     ("imputer",KNNImputer(n_neighbors=5, weights="distance")),
                     ("scalar",StandardScaler())
                     
-                ]
+                ],memory="cache_folder"
             )
 
             cat_pipeline=Pipeline(
@@ -45,7 +45,7 @@ class DataTransformation:
                     # FIXED: Added handle_unknown='ignore' to prevent crashes
                     ("one_hot_encoder", OneHotEncoder(handle_unknown='ignore')),
                     ("scaler",StandardScaler(with_mean=False))
-                ]
+                ],memory="cache_folder"
             )
 
             logging.info(f"Categorical columns: {categorical_columns}")

@@ -6,11 +6,12 @@ import os
 import pickle
 import streamlit as st
 
-@st.cache_resource
+
 class PredictPipeline:
     def __init__(self):
         pass
-
+    
+    @st.cache_resource
     def predict(self,features):
         try:
             model_path = os.path.join("artifacts", "data_training", "model.pickel")

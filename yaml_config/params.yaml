@@ -24,6 +24,7 @@ model_params:
     n_estimators: [50, 100, 200]
     max_depth: [3, 5, 7]
     subsample: [0.7, 0.8, 0.9]
+    
   
   CatBoosting Regressor:
     iterations: [100, 300, 500]           # Number of trees
@@ -32,7 +33,8 @@ model_params:
     l2_leaf_reg: [1, 3, 5, 10]           # Regularization to prevent overfitting
     bagging_temperature: [0, 1]          # Bayesian bagging (0 is off, 1 is on)
     border_count: [32, 64, 128]          # Precision for numerical features
-    random_strength: [1, 10]             # Amount of randomness for splitting
+    random_strength: [1, 10] 
+  
   
   AdaBoost Regressor:
     #learning_rate: [0.1, 0.01, 0.5, 0.001]
