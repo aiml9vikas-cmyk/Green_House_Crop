@@ -25,8 +25,6 @@ class ConfigurationManager:
 
         data_ingestion_config=DataIngestionConfig(
             root_dir=config.root_dir,
-            train_data_path=config.train_data_path,
-            test_data_path=config.test_data_path,
             raw_data_path=config.raw_data_path
 
         )
@@ -49,7 +47,6 @@ class ConfigurationManager:
     
     def get_data_transformation_config(self) -> DataTransformationConfig:
         config=self.config.data_transformation
-        schema=self.schema.TARGET_COLUMN
         schema_a = self.schema.COLUMNS
         create_directories([config.root_dir])
         data_transformation_config=DataTransformationConfig(
@@ -58,16 +55,14 @@ class ConfigurationManager:
             test_data_path= config.test_data_path,
             raw_data_path= config.raw_data_path,
             pre_processing= config.pre_processing,
-            target_column = schema.name,
+            target_column=config.target_column,
             all_schema=schema_a
         )
         return data_transformation_config
     
     def get_model_trainer_config(self) -> ModelTrainerConfig:
         config = self.config.model_trainer
-        params = self.params.model_params
         
-
         create_directories([config.root_dir])
 
         model_trainer_config = ModelTrainerConfig(

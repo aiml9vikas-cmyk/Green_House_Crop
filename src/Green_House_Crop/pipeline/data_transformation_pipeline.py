@@ -1,7 +1,7 @@
 from src.Green_House_Crop.config.configuration import ConfigurationManager
 from src.Green_House_Crop.components.data_transformation import DataTransformation
 from src.Green_House_Crop.logger import logging
-
+import sys
 from pathlib import Path
 
 
@@ -20,9 +20,10 @@ class DataTransformationTrainingPipeline:
                 config=ConfigurationManager()
                 data_transformation_config=config.get_data_transformation_config()
                 data_transformation=DataTransformation(config=data_transformation_config)
-                data_transformation.initiate_data_transformation()
+                train_arr, test_arr, preprocessor_path=data_transformation.initiate_data_transformation()
+                return train_arr,test_arr,preprocessor_path
             else:
                 raise Exception("Your data scheme is not valid")
             
         except Exception as e:
-            print(e)
+            raise CustomException(e,sys)

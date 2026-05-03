@@ -12,10 +12,6 @@ from src.Green_House_Crop.constants import *
 from src.Green_House_Crop.utils.common import read_yaml, create_directories,save_json
 from pathlib import Path
 import os
-#os.environ["MLFLOW_TRACKING_URI"]="https://dagshub.com/aiml9vikas-cmyk/Green_House_Crop.mlflow"
-#os.environ["MLFLOW_TRACKING_USERNAME"]="vikas"
-#os.environ["MLFLOW_TRACKING_PASSWORD"]="410f2620a6c712cc25fbc18c13b188de3c44f1f2"
-
 import dagshub
 dagshub.init(repo_owner='aiml9vikas-cmyk', repo_name='Green_House_Crop', mlflow=True)
 

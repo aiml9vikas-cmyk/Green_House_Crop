@@ -28,13 +28,7 @@ class ModelTrainer:
     def evaluate_models(self,X_train, y_train,X_test,y_test,models,param):
         try:
             report = {}
-            
-            """
-            for i in range(len(list(models))):
-                model = list(models.values())[i]
-                para=param[list(models.keys())[i]]
-            """              
-                #para = param.get(para, {}) 
+                      
             for model_name, model in models.items():
                 # Get params from yaml, default to {} if missing or None
                 para = param.get(model_name, {})
@@ -42,15 +36,24 @@ class ModelTrainer:
                     para = {}
 
                 logging.info(f"Started training: {model_name}")
-
-                gs = GridSearchCV(model,para,cv=3,n_jobs=-1)
+                # 1. Find Best Parameters using GridSearch
+                gs = GridSearchCV(model,para,cv=3,n_jobs=-1,scoring='r2')
                 gs.fit(X_train,y_train)
 
+                # 2. Update the model with the best parameters found
                 model.set_params(**gs.best_params_)
-                model.fit(X_train,y_train)
-
-                #model.fit(X_train, y_train)  # Train model
-
+                 # 3. Final Fit with Early Stopping (for compatible models)
+                if "CatBoosting Regressor" in model_name:
+                    model.fit(
+                        X_train, y_train,
+                        eval_set=[(X_test, y_test)],
+                        early_stopping_rounds=50,
+                        verbose=False
+                    )
+                else:
+                    model.fit(X_train, y_train)
+               
+               
                 y_train_pred = model.predict(X_train)
 
                 y_test_pred = model.predict(X_test)
@@ -59,7 +62,6 @@ class ModelTrainer:
 
                 test_model_score = r2_score(y_test, y_test_pred)
 
-                #report[list(models.keys())[i]] = test_model_score
                 report[model_name] = test_model_score
                 logging.info(f"Model: {model_name}, Score: {test_model_score}")
 
