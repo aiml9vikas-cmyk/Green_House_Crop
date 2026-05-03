@@ -40,22 +40,23 @@ Green_House_Crop/
 ### 1. Setup Environment
 ```bash
 # Using uv (Recommended)
-uv venv
-source .venv/bin/activate
-
-# Install requirements
-uv add -r requirements.txt
+uv sync
 ```
 
 ### 2. Run the Training Pipeline
 This executes the full workflow from raw data to a registered model in Dagshub.
 ```bash
-python main.py
+python -m main.py
+    or
+uv run main.py
+
 ```
 
 ### 3. Launch the Web Interface
 ```bash
 streamlit run app.py
+    or
+uv run streamlit run app.py
 ```
 
 ## 📊 Model Performance
