@@ -90,7 +90,7 @@ class ModelTrainer:
                 "Gradient Boosting": GradientBoostingRegressor(),
                 "Linear Regression": LinearRegression(),
                 "XGBRegressor": XGBRegressor(n_jobs=-1),
-                "CatBoosting Regressor": CatBoostRegressor(task_type="CPU",thread_count=-1, verbose=False),
+                "CatBoosting Regressor": CatBoostRegressor(thread_count=-1, verbose=False),
                 "AdaBoost Regressor": AdaBoostRegressor(),
             }
             

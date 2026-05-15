@@ -15,3 +15,9 @@ xgboost
 dill
 streamlit
 dagshub
+certifi
+pymongo
+python-dotenv
+pyrefly
+plotly
+

@@ -1,27 +1,33 @@
-# Use a slim Python image (3.11 is recommended for ML compatibility)
-FROM python:3.11-slim-bookworm
+# Stage 1: Build environment using the official uv image
+FROM ghcr.io/astral-sh/uv:python3.10-alpine AS builder
 
-# Install uv using the corrected ghcr.io path
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
-# Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Copy dependency files first
+# Enable bytecode compilation for faster application startup
+ENV UV_COMPILE_BYTECODE=1
+
+# Copy only the files needed for dependency installation
 COPY pyproject.toml uv.lock ./
 
-# Install dependencies (without the local project)
-RUN uv sync --frozen --no-install-project
+# Synchronize dependencies (creates a virtual environment at /app/.venv)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project
 
-# Copy the rest of the application
+# Stage 2: Final lightweight runtime image
+FROM python:3.10-slim-bookworm
+
+WORKDIR /app
+
+# Copy the pre-built virtual environment from the builder stage
+COPY --from=builder /app/.venv /app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
+
+# Copy the rest of your application code
 COPY . .
 
-# Install the project itself (the 'src' folder)
-RUN uv sync --frozen
-
-# Expose Streamlit port
+# Expose Streamlit's default communication port
 EXPOSE 8501
 
-# Run the application
-# We use 'uv run' to ensure the locked environment is used
-CMD ["uv", "run", "streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Configure Streamlit to run optimally inside a headless cloud container
+ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]

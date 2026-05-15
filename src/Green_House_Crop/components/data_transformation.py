@@ -15,10 +15,50 @@ from sklearn.impute import KNNImputer
 from sklearn.preprocessing import FunctionTransformer
 import os
 from src.Green_House_Crop.utils.common import save_object
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.decomposition import PCA  # Added PCA for dimensionality reduction
 
-def drop_unnecessary_columns(df):
-        # Ensure it returns a DataFrame to keep column names for the next steps
-        return df.drop(columns=['planting_date', 'harvest_date'], axis=1, errors='ignore')
+class GrowthDurationTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self, planting_col='planting_date', harvest_col='harvest_date'):
+        self.planting_col = planting_col
+        self.harvest_col = harvest_col
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X_df = pd.DataFrame(X).copy()
+        # Convert to datetime and calculate duration in days
+        if self.planting_col in X_df.columns and self.harvest_col in X_df.columns:
+            p_date = pd.to_datetime(X_df[self.planting_col])
+            h_date = pd.to_datetime(X_df[self.harvest_col])
+            X_df['growth_duration_days'] = (h_date - p_date).dt.days
+        
+        # Now it is safe to drop the original date strings
+        X_df = X_df.drop(columns=[self.planting_col, self.harvest_col], errors='ignore')
+        return X_df
+
+class OutlierCapper(BaseEstimator, TransformerMixin):
+    def __init__(self, factor=1.5):
+        self.factor = factor
+        self.lower_bound = {}
+        self.upper_bound = {}
+
+    def fit(self, X, y=None):
+        X_df = pd.DataFrame(X)
+        for column in X_df.columns:
+            Q1 = X_df[column].quantile(0.25)
+            Q3 = X_df[column].quantile(0.75)
+            IQR = Q3 - Q1
+            self.lower_bound[column] = Q1 - self.factor * IQR
+            self.upper_bound[column] = Q3 + self.factor * IQR
+        return self
+
+    def transform(self, X):
+        X_df = pd.DataFrame(X).copy()
+        for column in X_df.columns:
+            X_df[column] = np.clip(X_df[column], self.lower_bound[column], self.upper_bound[column])
+        return X_df.values
 
 class DataTransformation:
     def __init__(self, config: DataTransformationConfig):
@@ -28,11 +68,13 @@ class DataTransformation:
         """this function responsible for data transformation"""
 
         try:
+            
             numerical_columns = df.select_dtypes(exclude='object').columns
             categorical_columns = df.select_dtypes(include='object').columns
             num_pipeline=Pipeline(
                 steps=[
                     ("imputer",KNNImputer(n_neighbors=5, weights="distance")),
+                    ("outlier_handler", OutlierCapper(factor=1.5)),
                     ("scalar",StandardScaler())
                     
                 ],memory="cache_folder"
@@ -43,7 +85,7 @@ class DataTransformation:
                 steps=[
                     ("imputer",SimpleImputer(strategy="most_frequent")),
                     # FIXED: Added handle_unknown='ignore' to prevent crashes
-                    ("one_hot_encoder", OneHotEncoder(handle_unknown='ignore')),
+                    ("one_hot_encoder", OneHotEncoder(handle_unknown='ignore',sparse_output=False)),
                     ("scaler",StandardScaler(with_mean=False))
                 ],memory="cache_folder"
             )
@@ -51,11 +93,10 @@ class DataTransformation:
             logging.info(f"Categorical columns: {categorical_columns}")
             logging.info(f"Numerical columns: {numerical_columns}")
 
-            # 2. Identify columns (do this AFTER dropping in your logic)
-            # Or better: use the config-driven list we discussed earlier
-            df_dropped = drop_unnecessary_columns(df)
-            numerical_columns = df_dropped.select_dtypes(exclude='object').columns
-            categorical_columns = df_dropped.select_dtypes(include='object').columns
+           
+            df_processed = GrowthDurationTransformer().transform(df)
+            numerical_columns = df_processed.select_dtypes(exclude='object').columns
+            categorical_columns = df_processed.select_dtypes(include='object').columns
 
             preprocessor=ColumnTransformer(
                 [
@@ -66,8 +107,10 @@ class DataTransformation:
 
              # 4. WRAP EVERYTHING in a final pipeline that includes the DROP step
             final_preprocessor = Pipeline(steps=[
-                ("drop_cols", FunctionTransformer(drop_unnecessary_columns)),
-                ("process", preprocessor)
+                ("date_engineering", GrowthDurationTransformer()),
+                ("process", preprocessor),
+                # n_components=0.95 selects minimum components needed to keep 95% variance
+                #("pca", PCA(n_components=0.99, random_state=42))      
             ],memory="cache_folder")
         
             return final_preprocessor

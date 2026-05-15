@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "catboost>=1.2.10",
+    "certifi>=2026.4.22",
     "dagshub>=0.7.0",
     "dill>=0.4.1",
     "ensure>=1.0.4",
@@ -15,7 +16,11 @@ dependencies = [
     "notebook>=7.5.5",
     "numpy>=2.4.4",
     "pandas>=2.3.3",
+    "plotly>=6.7.0",
+    "pymongo>=4.17.0",
+    "pyrefly>=1.0.0",
     "python-box>=7.4.1",
+    "python-dotenv>=1.2.2",
     "pyyaml>=6.0.3",
     "scikit-learn>=1.8.0",
     "streamlit>=1.56.0",
@@ -23,3 +28,5 @@ dependencies = [
     "types-pyyaml>=6.0.12.20260408",
     "xgboost>=3.2.0",
 ]
+
+

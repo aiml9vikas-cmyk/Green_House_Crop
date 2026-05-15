@@ -33,6 +33,7 @@ list_of_files=[
     "yaml_config/config.yaml",
     "yaml_config/params.yaml",
     "app.py",
+    ".env",
     "Dockerfile",
     "requirements.txt",
     "notebook/model.ipynb",

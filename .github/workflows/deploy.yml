@@ -1,0 +1,59 @@
+name: Deploy Streamlit App to Free AWS EC2
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Ship Code to Free EC2 Instance
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    # Copy files straight to the EC2 server using secure SSH protocol
+    - name: Deploy Code via Secure Copy (SCP)
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: "."
+        target: "/home/ubuntu/greenhouse_app"
+
+    # Log into the instance via SSH to provision uv and launch the app headless
+    - name: Execute Remote SSH Provisioning & Launch Commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        script: |
+          cd /home/ubuntu/greenhouse_app
+          
+          # 1. Install Astral uv silently if it is not present on the VM
+          if ! command -v uv &> /dev/null; then
+            echo "Installing Astral uv..."
+            curl -LsSf https://astral.sh | sh
+            # Source profile so environment path variables take effect immediately
+            source $HOME/.local/bin/env
+          else
+            source $HOME/.local/bin/env
+          fi
+
+          # 2. Synchronize project configurations and compile dependencies
+          uv sync --frozen
+
+          # 3. Safely kill any existing live instances running on Streamlit's port 
+          fuser -k 8501/tcp || true
+
+          # 4. Run the production app detached in the background using 'nohup'
+          echo "Launching Streamlit production dashboard..."
+          nohup uv run streamlit run app.py \
+            --server.port=8501 \
+            --server.address=0.0.0.0 \
+            --server.headless=true > streamlit.log 2>&1 &
+          
+          echo "Deployment successful!"
